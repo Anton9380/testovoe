@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Rendering Client</title>
+    <!-- Подключение OpenLayers -->
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.14.2/css/ol.css" type="text/css">
+    <script src="https://openlayers.org/en/v6.14.2/build/ol.js"></script>
+    <style>
+        /* Установка высоты для карты */
+        #map {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+<h1>Map Rendering Client</h1>
+
+<!-- Создание контейнера для карты -->
+<div id="map"></div>
+
+<script>
+        // Создание карты
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                // Добавление слоя OpenStreetMap в качестве фона
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            // Установка начального положения и масштаба карты
+            view: new ol.View({
+                center: ol.proj.fromLonLat([0, 0]),
+                zoom: 2
+            })
+        });
+
+        // Функция для добавления точек на карту
+        function addPointToMap(lon, lat, color) {
+            const point = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat])),
+            });
+
+            const style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 6,
+                    fill: new ol.style.Fill({
+                        color: color,
+                    }),
+                }),
+            });
+
+            point.setStyle(style);
+            const vectorSource = new ol.source.Vector({
+                features: [point],
+            });
+
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+            });
+
+            map.addLayer(vectorLayer);
+        }
+
+        // Пример добавления точек на карту
+        // В реальном приложении эти данные будут приходить с сервера
+        addPointToMap(0, 0, 'red');
+        addPointToMap(10, 10, 'blue');
+        addPointToMap(-10, -10, 'green');
+    </script>
+</body>
+</html>
